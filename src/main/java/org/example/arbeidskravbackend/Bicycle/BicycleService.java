@@ -1,5 +1,6 @@
 package org.example.arbeidskravbackend.Bicycle;
 
+import org.example.arbeidskravbackend.Manufacturer.ManufacturerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,9 +9,12 @@ import java.util.List;
 public class BicycleService {
 
     private final BicycleRepo repo;
+    private final ManufacturerService manufacturerService;
 
-    public BicycleService(BicycleRepo repo) {
+
+    public BicycleService(BicycleRepo repo, ManufacturerService manufacturerService) {
         this.repo = repo;
+        this.manufacturerService = manufacturerService;
     }
 
     public Bicycle getBicycleById(Long id) {
@@ -21,15 +25,29 @@ public class BicycleService {
         return repo.findAll();
     }
 
-    public Bicycle addBicycle(Bicycle bicycle) {
-        return repo.save(bicycle);
+    public Bicycle addBicycle(BicycleDto bicycle) {
+
+        return repo.save(new Bicycle(
+                bicycle.name(),
+                bicycle.color(),
+                bicycle.model(),
+                bicycle.inStock(),
+                manufacturerService.getManufacturerById(bicycle.manufacturerId())
+        ));
     }
 
     public void removeBicycle(Long id) {
         repo.deleteById(id);
     }
 
-    public List<Bicycle> bicylesInStock() {
-        return repo.findBy()
+    public List<Bicycle> getAllBicyclesInStock() {
+        return repo.findAll().stream()
+                .filter( b -> b.getInStock() > 0)
+                .toList();
+    }
+
+    public List<Bicycle> getAllBicyclesOutOfStock() {
+        return repo.findAll().stream().filter( b -> b.getInStock() == 0)
+                .toList();
     }
 }

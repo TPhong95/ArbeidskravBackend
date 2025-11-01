@@ -1,6 +1,8 @@
 package org.example.arbeidskravbackend.Bicycle;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.example.arbeidskravbackend.Manufacturer.Manufacturer;
 
 @Entity
 public class Bicycle {
@@ -12,9 +14,13 @@ public class Bicycle {
     private String color;
     private String model;
     private Long inStock;
-    private String manufacturer;
 
-    public Bicycle(String name, String color, String model, Long inStock, String manufacturer) {
+    @ManyToOne()
+    @JoinColumn(name = "manufacturer_id")
+    @JsonIgnoreProperties("bicycles")
+    private Manufacturer manufacturer;
+
+    public Bicycle(String name, String color, String model, Long inStock, Manufacturer manufacturer) {
         this.name = name;
         this.color = color;
         this.model = model;
@@ -66,11 +72,11 @@ public class Bicycle {
         this.inStock = inStock;
     }
 
-    public String getManufacturer() {
+    public Manufacturer getManufacturer() {
         return manufacturer;
     }
 
-    public void setManufacturer(String manufacturer) {
+    public void setManufacturer(Manufacturer manufacturer) {
         this.manufacturer = manufacturer;
     }
 }

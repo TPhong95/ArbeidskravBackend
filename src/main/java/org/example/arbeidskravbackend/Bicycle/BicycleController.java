@@ -34,7 +34,7 @@ public class BicycleController {
     }
 
     @PostMapping()
-    public ResponseEntity<Bicycle> addBicycle(@RequestBody Bicycle bicycle) {
+    public ResponseEntity<Bicycle> addBicycle(@RequestBody BicycleDto bicycle) {
         var result = bicycleService.addBicycle(bicycle);
         return ResponseEntity.ok(result);
     }
@@ -45,14 +45,24 @@ public class BicycleController {
         return ResponseEntity.ok("Bicycle " + id + " has been removed");
     }
 
+
     @GetMapping("/init")
     public ResponseEntity<String> initTestData() {
         testData.createTestData();
         return ResponseEntity.ok("Books init");
     }
 
-    @GetMapping("instock")
-    public ResponseEntity<String> instock() {
 
+
+    @GetMapping("/instock")
+    public ResponseEntity<List<Bicycle>> getAllBicycleInStock() {
+        var result = bicycleService.getAllBicyclesInStock();
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/outstock")
+    public ResponseEntity<List<Bicycle>> getAllBicyclesOutOfStock() {
+        var result = bicycleService.getAllBicyclesOutOfStock();
+        return ResponseEntity.ok(result);
     }
 }
